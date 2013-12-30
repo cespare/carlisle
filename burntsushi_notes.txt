@@ -1,0 +1,27 @@
+burntsushi │ no prob, glad they could be of help :-)
+   cespare │ I'm trying to make a thing that can resize and move my windows around...when I use ewmh's moveresize stuff, does that include window
+           │ decoration dimensions? It seems like it doesnt...
+   cespare │ I'm new to the fun(?) world of X programming
+   cespare │ and not to be too bothersome, but do you know how terminals and stuff that can only be resized to multiples of columns/rows works? For
+           │ instance, if I want to resize to be the largest possible size the window will allow itself to be that doesn't go over WxH
+   cespare │ or at least, do you know what this is called? I can't even figure out what to google for.
+burntsushi │ i am headed out for the day, but you'll probably want to look at the ICCCM
+burntsushi │ in particular, http://tronche.com/gui/x/icccm/sec-4.html#s-4.1.2
+burntsushi │ the ewmh itself doesn't really have any properties related to decorations other than _NET_CLIENT_FRAME
+burntsushi │ moving/resizing a window doesn't take into account decorations, annoyingly.
+burntsushi │ i tackled this problem years ago by detecting the size of decorations. for instance, getting the size of a client's parent window and
+           │ subtracting the size of the client from that.
+burntsushi │ the problem is, not all WMs put decorations in the direct parent.
+burntsushi │ i know Openbox does it.
+burntsushi │ but i think, e.g., Kwin (KDE's WM) has two parents
+burntsushi │ there's no standard for that
+burntsushi │ so that function has to be WM dependent.
+burntsushi │ got to go. i'll try to respond to more questions tonight if i see them
+burntsushi │ you may be able to get some ideas by looking at pytyle3 and maybe some of the functions in xpybutil
+burntsushi │ (both projects are on my github)
+burntsushi │ i'm sorry, i meant _NET_FRAME_EXTENTS and not _NET_CLIENT_FRAME
+burntsushi │ you may find these functions useful: https://github.com/BurntSushi/xpybutil/blob/master/xpybutil/window.py
+burntsushi │ moveresize there does what you want for some window managers.
+burntsushi │ they should be fairly straight forward to write using xgbutil/xwindow, i think.
+burntsushi │ OK. good luck!
+   cespare │ burntsushi: awesome, thanks! That was a lot of very useful information and pointers
