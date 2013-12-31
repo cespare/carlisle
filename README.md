@@ -100,14 +100,20 @@ split them up.
   - Math: `+`, `-`, `*`, `-`, `min`, `max`
 * Focus
   - `focus 'match=foobar'` -- focus the first window with title matching "foobar".
-* Move screens
-  - `movescreen 'dir=left'`
+* Move window to a different display
+  - `movedisplay 'dir=left'`
 * Move desktops
   - `movedesktop 'dir=right'`
 * Pick a window by hitting a key or two
   - `startpicker` (no arguments)
   - Inspiration from vimium/slate -- display the window name/icon on each (and maybe shade the desktop). The
     user just needs to type an unambiguous prefix of the shortcut displayed.
+* Full-screen, minimize
+
+## Similar tools
+
+* [wmctrl](http://tomas.styblo.name/wmctrl/), a similar tool (doesn't take expressions for movement).
+* [Slate](https://github.com/jigish/slate) for Mac OS X.
 
 ## License
 
