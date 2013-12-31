@@ -3,70 +3,63 @@ package main
 import (
 	"fmt"
 	"log"
-
-	"github.com/BurntSushi/xgbutil"
-	"github.com/BurntSushi/xgbutil/ewmh"
-	"github.com/BurntSushi/xgbutil/xinerama"
-	"github.com/BurntSushi/xgbutil/xrect"
-	"github.com/BurntSushi/xgbutil/xwindow"
+	"os"
+	"sort"
 )
 
-// Errors are all check
+// check aborts on non-nil errors. (In this program, all errors are generally fatal for simplicity.)
 func check(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
+type Command interface {
+	Execute(args []string) error
+	Help() string
+}
+
+var (
+	commands = map[string]Command{
+		"moveresize": &MoveResize{},
+	}
+	commandNames []string
+)
+
+func init() {
+	for name := range commands {
+		commandNames = append(commandNames, name)
+	}
+	sort.Strings(commandNames)
+}
+
+func usage(status int) {
+	fmt.Printf(`Usage:
+    %s COMMAND [arg1] [arg2] ...
+where COMMAND is one of %v
+(Type '%[1]s help COMMAND' to see information about a specific command.)
+`, os.Args[0], commandNames)
+	os.Exit(status)
+}
+
 func main() {
-	X, err := xgbutil.NewConn()
-	check(err)
-
-	root := xwindow.New(X, X.RootWin())
-	rgeom, err := root.Geometry()
-	check(err)
-
-	var heads xinerama.Heads
-	if X.ExtInitialized("XINERAMA") {
-		heads, err = xinerama.PhysicalHeads(X)
-		check(err)
-	} else {
-		heads = xinerama.Heads{rgeom}
+	if len(os.Args) < 2 {
+		usage(-1)
 	}
-
-	if len(heads) != 1 {
-		log.Fatal(">1 heads are not handled for now.")
+	switch os.Args[1] {
+	case "-h", "-help", "--help", "help":
+		usage(0)
 	}
-
-	for i, head := range heads {
-		fmt.Printf("Head #%d: %s\n", i+1, head)
+	command, ok := commands[os.Args[1]]
+	if !ok {
+		usage(-1)
 	}
-	fmt.Println("---------")
-
-	clients, err := ewmh.ClientListGet(X)
-	check(err)
-	for _, client := range clients {
-		strut, err := ewmh.WmStrutPartialGet(X, client)
-		if err != nil {
-			continue
+	if len(os.Args) >= 3 {
+		switch os.Args[2] {
+		case "-h", "-help", "--help", "help":
+			fmt.Println(command.Help())
+			os.Exit(0)
 		}
-
-		xrect.ApplyStrut(heads, uint(rgeom.Width()), uint(rgeom.Height()),
-			strut.Left, strut.Right, strut.Top, strut.Bottom,
-			strut.LeftStartY, strut.LeftEndY, strut.RightStartY, strut.RightEndY,
-			strut.TopStartX, strut.TopEndX, strut.BottomStartX, strut.BottomEndX,
-		)
 	}
-	for i, head := range heads {
-		fmt.Printf("Head #%d: %s\n", i+1, head)
-	}
-
-	current, err := ewmh.ActiveWindowGet(X)
-	check(err)
-	fmt.Printf("x=%d, y=%d, w=%d, h=%d\n", heads[0].X(), heads[0].Y(), heads[0].Width()/2, heads[0].Height())
-	check(ewmh.MoveresizeWindow(X, current, heads[0].X(), heads[0].Y(), heads[0].Width()/2, heads[0].Height()))
-
-	dgeom, err := xwindow.New(X, current).DecorGeometry()
-	check(err)
-	fmt.Printf("\033[01;34m>>>> dgeom: %v\x1B[m\n", dgeom)
+	check(command.Execute(os.Args[2:]))
 }
