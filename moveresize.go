@@ -137,8 +137,10 @@ func (m *MoveResize) Execute(args []string) error {
 		return err
 	}
 
-	state.X = dgeom.X()
-	state.Y = dgeom.Y()
+	// We make it appear to the user as though (0,0) is at the top left of the usable space (so if you have a
+	// 25px bar at the top of your screen, what the user sees as the origin is actually x = 0, y = 25.
+	state.X = dgeom.X() - heads[0].X()
+	state.Y = dgeom.Y() - heads[0].Y()
 	state.W = dgeom.Width()
 	state.H = dgeom.Height()
 
@@ -153,7 +155,7 @@ func (m *MoveResize) Execute(args []string) error {
 		if err != nil {
 			return err
 		}
-		x = int(xf)
+		x = int(xf) + heads[0].X()
 	}
 	y := dgeom.Y()
 	if m.Y != nil {
@@ -161,7 +163,7 @@ func (m *MoveResize) Execute(args []string) error {
 		if err != nil {
 			return err
 		}
-		y = int(yf)
+		y = int(yf) + heads[0].Y()
 	}
 	w := dgeom.Width()
 	if m.W != nil {
