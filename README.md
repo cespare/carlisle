@@ -119,6 +119,8 @@ split them up.
   - Math: `+`, `-`, `*`, `-`, `min`, `max`
 * Focus
   - `focus 'match=foobar'` -- focus the first window with title matching "foobar".
+  - `dir=left` -- focus the top window that's predominently in some direction from the active window. This
+    will take some playing around with heuristics.
 * Move window to a different display
   - `movedisplay 'dir=left'`
 * Move desktops
