@@ -29,8 +29,8 @@ which may involve constants; the functions `+`, `-`, `*`, `/`, `min`, and `max`;
 * `sh` - screen height
 
 One detail to be aware of is that the coordinates you use are relative to the usable portion of the display.
-If you have, say, a panel at the top or bottom of the screen taking, the window coordinates and screen
-height/width are all relative to the rectangle excluding the panel(s).
+If you have, say, a panel at the top or bottom of the screen, the window coordinates and screen height/width
+are all relative to the rectangle excluding the panel(s).
 
 **Example:** Here's how you can use moveresize to make the active window occupy the right half of your screen:
 
