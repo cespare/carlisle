@@ -32,6 +32,10 @@ One detail to be aware of is that the coordinates you use are relative to the us
 If you have, say, a panel at the top or bottom of the screen taking, the window coordinates and screen
 height/width are all relative to the rectangle excluding the panel(s).
 
+**Example:** Here's how you can use moveresize to make the active window occupy the right half of your screen:
+
+    $ carlisle moveresize x=0 y=0 'w=(* 0.5 sw)' h=sh
+
 ### focus
 
 Activate (raise and focus) a window by matching its title.
@@ -41,7 +45,11 @@ Activate (raise and focus) a window by matching its title.
 This just looks through the window stack from top to bottom and finds the first window whose title contains
 the substring. The match is case-insensitive.
 
-## Example
+**Example:** This is how you might quickly focus a gvim window:
+
+    $ carlisle focus match=gvim
+
+## Examples
 
 Note that you'll probably want single quotes around your `moveresize` argument strings or your shell will
 split them up.
