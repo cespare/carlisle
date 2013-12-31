@@ -34,7 +34,7 @@ height/width are all relative to the rectangle excluding the panel(s).
 
 **Example:** Here's how you can use moveresize to make the active window occupy the right half of your screen:
 
-    $ carlisle moveresize x=0 y=0 'w=(* 0.5 sw)' h=sh
+    $ carlisle moveresize 'x=(* 0.5 sw)' y=0 'w=(* 0.5 sw)' h=sh
 
 ### focus
 
@@ -90,11 +90,11 @@ split them up.
 "carlisle moveresize 'h=(max (- h 100) 0)'"
   mod4 + shift + k
 
-# Right half of screen
+# Left half of screen
 "carlisle moveresize x=0 y=0 'w=(* 0.5 sw)' h=sh"
   mod4 + shift + comma
 
-# Left half of screen
+# Right half of screen
 "carlisle moveresize 'x=(* 0.5 sw)' y=0 'w=(* 0.5 sw)' h=sh"
   mod4 + shift + period
 ```
