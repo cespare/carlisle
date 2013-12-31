@@ -27,7 +27,6 @@ func ParseArith(b []byte) (Arith, error) {
 }
 
 func parseArith(b []byte) (arith Arith, rest []byte, err error) {
-	fmt.Printf("parseArith: %q\n", string(b))
 	b = bytes.TrimSpace(b)
 	if len(b) == 0 {
 		return nil, nil, unexpectedEnd
@@ -87,7 +86,6 @@ type ArithFn struct {
 var unexpectedEnd = errors.New("reached end of expression unexpectedly")
 
 func parseArithFn(b []byte) (*ArithFn, []byte, error) {
-	fmt.Printf("parseArithFn: %q\n", string(b))
 	b = b[1:]
 	first, rest, err := scanTok(b)
 	if err != nil {
@@ -205,7 +203,6 @@ var AtomToSymbol = map[ArithAtom]string{
 var SymbolToAtom = make(map[string]ArithAtom)
 
 func parseArithAtom(b []byte) (ArithAtom, []byte, error) {
-	fmt.Printf("parseArithAtom: %q\n", string(b))
 	first, rest, err := scanTok(b)
 	if err != nil {
 		return 0, nil, err
@@ -242,7 +239,6 @@ func (a ArithAtom) String() string {
 type ArithConst float64
 
 func parseArithConst(b []byte) (ArithConst, []byte, error) {
-	fmt.Printf("parseArithConst: %q\n", string(b))
 	first, rest, err := scanTok(b)
 	if err != nil {
 		return 0, nil, err

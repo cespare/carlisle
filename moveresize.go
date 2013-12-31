@@ -67,7 +67,6 @@ func (m *MoveResize) parseArgs(args []string) error {
 			m.H = arith
 		}
 	}
-	fmt.Printf("\033[01;34m>>>> m: %v\x1B[m\n", m)
 	return nil
 }
 
