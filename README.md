@@ -12,8 +12,6 @@ Status: Alpha. Useful for me. Liable to change.
 
     $ carlisle COMMAND arg1 arg2 ...
 
-Only `moveresize` is implemented right now.
-
 ### moveresize
 
 Set the position and size of the active window.
@@ -33,6 +31,15 @@ which may involve constants; the functions `+`, `-`, `*`, `/`, `min`, and `max`;
 One detail to be aware of is that the coordinates you use are relative to the usable portion of the display.
 If you have, say, a panel at the top or bottom of the screen taking, the window coordinates and screen
 height/width are all relative to the rectangle excluding the panel(s).
+
+### focus
+
+Activate (raise and focus) a window by matching its title.
+
+    $ carlisle focus match=substr
+
+This just looks through the window stack from top to bottom and finds the first window whose title contains
+the substring. The match is case-insensitive.
 
 ## Example
 

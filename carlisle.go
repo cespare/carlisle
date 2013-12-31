@@ -22,6 +22,7 @@ type Command interface {
 var (
 	commands = map[string]Command{
 		"moveresize": &MoveResize{},
+		"focus":      &Focus{},
 	}
 	commandNames []string
 )
