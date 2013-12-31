@@ -32,16 +32,13 @@ func parseArith(b []byte) (arith Arith, rest []byte, err error) {
 	if len(b) == 0 {
 		return nil, nil, unexpectedEnd
 	}
-	switch b[0] {
-	case '(':
+	switch {
+	case b[0] == '(':
 		return parseArithFn(b)
-	case 'w', 'h', 's':
-		return parseArithAtom(b)
-	}
-	if b[0] >= '0' && b[0] <= '9' {
+	case b[0] >= '0' && b[0] <= '9':
 		return parseArithConst(b)
 	}
-	return nil, nil, fmt.Errorf("unexpected input starting with: %q", b)
+	return parseArithAtom(b)
 }
 
 func scanTok(b []byte) (first, rest []byte, err error) {
@@ -188,13 +185,17 @@ func (a *ArithFn) String() string {
 type ArithAtom int
 
 const (
-	AtomWidth ArithAtom = iota
+	AtomX ArithAtom = iota
+	AtomY
+	AtomWidth
 	AtomHeight
 	AtomScreenWidth
 	AtomScreenHeight
 )
 
 var AtomToSymbol = map[ArithAtom]string{
+	AtomX:            "x",
+	AtomY:            "y",
 	AtomWidth:        "w",
 	AtomHeight:       "h",
 	AtomScreenWidth:  "sw",
@@ -218,6 +219,10 @@ func parseArithAtom(b []byte) (ArithAtom, []byte, error) {
 
 func (a ArithAtom) Eval(state *MoveResizeState) (float64, error) {
 	switch a {
+	case AtomX:
+		return float64(state.X), nil
+	case AtomY:
+		return float64(state.Y), nil
 	case AtomWidth:
 		return float64(state.W), nil
 	case AtomHeight:

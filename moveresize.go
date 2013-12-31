@@ -13,7 +13,7 @@ import (
 )
 
 type MoveResizeState struct {
-	W, H             int
+	X, Y, W, H       int
 	ScreenW, ScreenH int
 }
 
@@ -138,6 +138,8 @@ func (m *MoveResize) Execute(args []string) error {
 		return err
 	}
 
+	state.X = dgeom.X()
+	state.Y = dgeom.Y()
 	state.W = dgeom.Width()
 	state.H = dgeom.Height()
 
