@@ -54,50 +54,23 @@ the substring. The match is case-insensitive.
 Note that you'll probably want single quotes around your `moveresize` argument strings or your shell will
 split them up.
 
-`moveresize` is enough to implement most kinds of positioning commands. For ideas, here is an excerpt from my
-`.xbindkeysrc`:
+`moveresize` is enough to implement most kinds of positioning commands. Here are some ideas:
 
 ```
-# Move 100px right, don't move off-screen
-"carlisle moveresize 'x=(min (+ x 100) (- sw w))'"
-  mod4 + l
-
-# Move 100px left, don't move off-screen
-"carlisle moveresize 'x=(max (- x 100) 0)'"
-  mod4 + h
-
 # Move 100px down
-"carlisle moveresize 'y=(+ y 100)'"
-  mod4 + j
+$ carlisle moveresize 'y=(+ y 100)'
 
-# Move 100px up; not above the top of the screen
-"carlisle moveresize 'y=(max (- y 100) 0)'"
-  mod4 + k
+# Move 100px right, don't move off-screen
+$ carlisle moveresize 'x=(min (+ x 100) (- sw w))'
 
-# Expand 100px to the right
-"carlisle moveresize 'w=(+ w 100)'"
-  mod4 + shift + l
+# Left half
+$ carlisle moveresize x=0 y=0 'w=(* 0.5 sw)' h=sh
 
-# Contract 100px from right
-"carlisle moveresize 'w=(max (- w 100) 0)'"
-  mod4 + shift + h
-
-# Expand 100px down
-"carlisle moveresize 'h=(+ h 100)'"
-  mod4 + shift + j
-
-# Contract 100px up
-"carlisle moveresize 'h=(max (- h 100) 0)'"
-  mod4 + shift + k
-
-# Left half of screen
-"carlisle moveresize x=0 y=0 'w=(* 0.5 sw)' h=sh"
-  mod4 + shift + comma
-
-# Right half of screen
-"carlisle moveresize 'x=(* 0.5 sw)' y=0 'w=(* 0.5 sw)' h=sh"
-  mod4 + shift + period
+# Expand 100px down without expanding off-screen
+$ carlisle moveresize 'h=(min (+ h 100) (- sh y))'
 ```
+
+I use [xbindkeys](http://www.nongnu.org/xbindkeys) to bind hotkeys to Carlisle commands, but you can use whatever tool you're most comfortable with (your desktop environment or window manager probably provides such functionality). If you'd like more ideas, check out my [`.xbindkeysrc`](https://github.com/cespare/dotfiles/blob/master/.xbindkeysrc).
 
 ## To Do
 
