@@ -74,7 +74,6 @@ I use [xbindkeys](http://www.nongnu.org/xbindkeys) to bind hotkeys to Carlisle c
 
 ## To Do
 
-* Multi-head support. (Not difficult, just need to hook up another monitor...)
 * Test out with some various WMs (I use XFCE; BurntSushi indicates that KWin, at least, requires some hacks)
 * Other commands (see below)
 
