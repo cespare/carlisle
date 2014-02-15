@@ -38,7 +38,7 @@ func usage(status int) {
 	fmt.Printf(`Usage:
     %s COMMAND [arg1] [arg2] ...
 where COMMAND is one of %v
-(Type '%[1]s help COMMAND' to see information about a specific command.)
+(Type '%[1]s COMMAND help' to see information about a specific command.)
 `, os.Args[0], commandNames)
 	os.Exit(status)
 }
