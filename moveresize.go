@@ -100,10 +100,6 @@ func (m *MoveResize) Execute(args []string) error {
 		heads = xinerama.Heads{rgeom}
 	}
 
-	if len(heads) != 1 {
-		return errors.New(">1 heads are not handled for now.")
-	}
-
 	// Find the struts so we know what area we have to work with
 	clients, err := ewmh.ClientListGet(X)
 	if err != nil {
@@ -122,11 +118,6 @@ func (m *MoveResize) Execute(args []string) error {
 		)
 	}
 
-	state := &MoveResizeState{
-		ScreenW: heads[0].Width(),
-		ScreenH: heads[0].Height(),
-	}
-
 	// Find the active window
 	current, err := ewmh.ActiveWindowGet(X)
 	if err != nil {
@@ -137,10 +128,31 @@ func (m *MoveResize) Execute(args []string) error {
 		return err
 	}
 
+	// Determine which head is associated with the active window by using a simple heuristic: pick the first
+	// head containing the centerpoint the window.
+	var activeHead xrect.Rect
+	if len(heads) == 1 {
+		activeHead = heads[0]
+	} else {
+		centerX := dgeom.X() + (dgeom.Width() / 2)
+		centerY := dgeom.Y() + (dgeom.Height() / 2)
+		for _, h := range heads {
+			if h.X() <= centerX && (h.X()+h.Width()) >= centerX &&
+				h.Y() <= centerY && (h.Y()+h.Height()) >= centerY {
+				activeHead = h
+				break
+			}
+		}
+	}
+	state := &MoveResizeState{
+		ScreenW: activeHead.Width(),
+		ScreenH: activeHead.Height(),
+	}
+
 	// We make it appear to the user as though (0,0) is at the top left of the usable space (so if you have a
 	// 25px bar at the top of your screen, what the user sees as the origin is actually x = 0, y = 25.
-	state.X = dgeom.X() - heads[0].X()
-	state.Y = dgeom.Y() - heads[0].Y()
+	state.X = dgeom.X() - activeHead.X()
+	state.Y = dgeom.Y() - activeHead.Y()
 	state.W = dgeom.Width()
 	state.H = dgeom.Height()
 
@@ -155,7 +167,7 @@ func (m *MoveResize) Execute(args []string) error {
 		if err != nil {
 			return err
 		}
-		x = int(xf) + heads[0].X()
+		x = int(xf) + activeHead.X()
 	}
 	y := dgeom.Y()
 	if m.Y != nil {
@@ -163,7 +175,7 @@ func (m *MoveResize) Execute(args []string) error {
 		if err != nil {
 			return err
 		}
-		y = int(yf) + heads[0].Y()
+		y = int(yf) + activeHead.Y()
 	}
 	w := dgeom.Width()
 	if m.W != nil {
