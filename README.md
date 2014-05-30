@@ -49,6 +49,12 @@ the substring. The match is case-insensitive.
 
     $ carlisle focus match=gvim
 
+### maximize
+
+Toggles the maximized state of the active window.
+
+    $ carlisle maximize
+
 ## Examples
 
 Note that you'll probably want single quotes around your `moveresize` argument strings or your shell will
