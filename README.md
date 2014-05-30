@@ -70,38 +70,10 @@ $ carlisle moveresize x=0 y=0 'w=(* 0.5 sw)' h=sh
 $ carlisle moveresize 'h=(min (+ h 100) (- sh y))'
 ```
 
-I use [xbindkeys](http://www.nongnu.org/xbindkeys) to bind hotkeys to Carlisle commands, but you can use whatever tool you're most comfortable with (your desktop environment or window manager probably provides such functionality). If you'd like more ideas, check out my [`.xbindkeysrc`](https://github.com/cespare/dotfiles/blob/master/.xbindkeysrc).
-
-## To Do
-
-* Test out with some various WMs (I use XFCE; BurntSushi indicates that KWin, at least, requires some hacks)
-* Other commands (see below)
-
-
-## Ideas
-
-* Carlisle will take a single command and arg strings: `./carlisle command arg1 arg2 ...`
-  - Each argument looks like an assignment `a=b`. Spaces are allowed (but you have to surround the argument
-    string with quotes: `'a = b'`).
-  - Generally, all parameters are optional and have reasonable defaults if not provided
-* Move+resize
-  - `moveresize 'x=0 y=0 w=(* 0.5 sw) h=sh'` -- put the current window on the left half of the current
-    screen. `sw` is screen width, `sh` is screen height.
-  - `moveresize 'w=(+ w 100)'` - increase the screen width by 100px (other parameters stay the same)
-  - Math: `+`, `-`, `*`, `-`, `min`, `max`
-* Focus
-  - `focus 'match=foobar'` -- focus the first window with title matching "foobar".
-  - `dir=left` -- focus the top window that's predominently in some direction from the active window. This
-    will take some playing around with heuristics.
-* Move window to a different display
-  - `movedisplay 'dir=left'`
-* Move desktops
-  - `movedesktop 'dir=right'`
-* Pick a window by hitting a key or two
-  - `startpicker` (no arguments)
-  - Inspiration from vimium/slate -- display the window name/icon on each (and maybe shade the desktop). The
-    user just needs to type an unambiguous prefix of the shortcut displayed.
-* Full-screen, minimize
+I use [xbindkeys](http://www.nongnu.org/xbindkeys) to bind hotkeys to Carlisle commands, but you can use
+whatever tool you're most comfortable with (your desktop environment or window manager probably provides such
+functionality). If you'd like more ideas, check out my
+[`.xbindkeysrc`](https://github.com/cespare/dotfiles/blob/master/.xbindkeysrc).
 
 ## Similar tools
 
