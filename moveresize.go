@@ -7,8 +7,6 @@ import (
 
 	"github.com/BurntSushi/xgbutil"
 	"github.com/BurntSushi/xgbutil/ewmh"
-	"github.com/BurntSushi/xgbutil/xinerama"
-	"github.com/BurntSushi/xgbutil/xrect"
 	"github.com/BurntSushi/xgbutil/xwindow"
 )
 
@@ -85,39 +83,10 @@ func (m *MoveResize) Execute(args []string) error {
 	if err != nil {
 		return err
 	}
-	root := xwindow.New(X, X.RootWin())
-	rgeom, err := root.Geometry()
+
+	heads, err := findHeads(X)
 	if err != nil {
 		return err
-	}
-
-	// Locate all the displays
-	var heads xinerama.Heads
-	if X.ExtInitialized("XINERAMA") {
-		heads, err = xinerama.PhysicalHeads(X)
-		if err != nil {
-			return err
-		}
-	} else {
-		heads = xinerama.Heads{rgeom}
-	}
-
-	// Find the struts so we know what area we have to work with
-	clients, err := ewmh.ClientListGet(X)
-	if err != nil {
-		return err
-	}
-	for _, client := range clients {
-		strut, err := ewmh.WmStrutPartialGet(X, client)
-		if err != nil {
-			continue
-		}
-
-		xrect.ApplyStrut(heads, uint(rgeom.Width()), uint(rgeom.Height()),
-			strut.Left, strut.Right, strut.Top, strut.Bottom,
-			strut.LeftStartY, strut.LeftEndY, strut.RightStartY, strut.RightEndY,
-			strut.TopStartX, strut.TopEndX, strut.BottomStartX, strut.BottomEndX,
-		)
 	}
 
 	// Find the active window
@@ -130,29 +99,23 @@ func (m *MoveResize) Execute(args []string) error {
 		return err
 	}
 
-	// Determine which head is associated with the active window by using a simple heuristic: pick the first
-	// head containing the centerpoint the window.
-	var activeHead xrect.Rect
-	if len(heads) == 1 {
-		activeHead = heads[0]
-	} else {
-		centerX := dgeom.X() + (dgeom.Width() / 2)
-		centerY := dgeom.Y() + (dgeom.Height() / 2)
-		for _, h := range heads {
-			if h.X() <= centerX && (h.X()+h.Width()) >= centerX &&
-				h.Y() <= centerY && (h.Y()+h.Height()) >= centerY {
-				activeHead = h
-				break
-			}
-		}
+	i, err := findAssociatedHead(dgeom, heads)
+	if err != nil {
+		return err
 	}
+	activeHead := heads[i]
+
+	if err := applyStruts(X, heads); err != nil {
+		return err
+	}
+
 	state := &MoveResizeState{
 		ScreenW: activeHead.Width(),
 		ScreenH: activeHead.Height(),
 	}
 
 	// We make it appear to the user as though (0,0) is at the top left of the usable space (so if you have a
-	// 25px bar at the top of your screen, what the user sees as the origin is actually x = 0, y = 25.
+	// 25px bar at the top of your screen, what the user sees as the origin is actually x = 0, y = 25).
 	state.X = dgeom.X() - activeHead.X()
 	state.Y = dgeom.Y() - activeHead.Y()
 	state.W = dgeom.Width()
