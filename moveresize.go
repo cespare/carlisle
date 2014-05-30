@@ -21,6 +21,8 @@ type MoveResize struct {
 	X, Y, W, H Arith
 }
 
+func init() { commands["moveresize"] = &MoveResize{} }
+
 func (m *MoveResize) Help() string {
 	return `moveresize usage:
     moveresize x=x1 y=y1 w=w1 h=h1

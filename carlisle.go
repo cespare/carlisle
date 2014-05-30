@@ -20,19 +20,9 @@ type Command interface {
 }
 
 var (
-	commands = map[string]Command{
-		"moveresize": &MoveResize{},
-		"focus":      &Focus{},
-	}
+	commands = map[string]Command{} // Filled in in init()s
 	commandNames []string
 )
-
-func init() {
-	for name := range commands {
-		commandNames = append(commandNames, name)
-	}
-	sort.Strings(commandNames)
-}
 
 func usage(status int) {
 	fmt.Printf(`Usage:
@@ -44,6 +34,11 @@ where COMMAND is one of %v
 }
 
 func main() {
+	for name := range commands {
+		commandNames = append(commandNames, name)
+	}
+	sort.Strings(commandNames)
+
 	if len(os.Args) < 2 {
 		usage(-1)
 	}

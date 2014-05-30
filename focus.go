@@ -11,6 +11,8 @@ import (
 
 type Focus struct{}
 
+func init() { commands["focus"] = &Focus{} }
+
 func (f *Focus) Help() string {
 	return `focus usage:
     focus match=string
