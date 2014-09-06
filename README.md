@@ -55,7 +55,7 @@ the substring. The match is case-insensitive.
 
 Toggles the maximized or fullscreen state of the active window.
 
-    $ carlisle toggle maximize
+    $ carlisle toggle maximized
 
 ### switch
 
