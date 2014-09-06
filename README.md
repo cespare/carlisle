@@ -12,6 +12,8 @@ Status: Alpha. Useful for me. Liable to change.
 
     $ carlisle COMMAND arg1 arg2 ...
 
+Do `carlisle -h` for help, or `carlisle COMMAND help` for help with a specific command.
+
 ### moveresize
 
 Set the position and size of the active window.
@@ -49,11 +51,18 @@ the substring. The match is case-insensitive.
 
     $ carlisle focus match=gvim
 
-### maximize
+### toggle
 
-Toggles the maximized state of the active window.
+Toggles the maximized or fullscreen state of the active window.
 
-    $ carlisle maximize
+    $ carlisle toggle maximize
+
+### switch
+
+Move the active window to a different head. You can provide absolute (`head=N`, 0-indexed) or relative
+(`dir=left`, `dir=right`) positions. Relative directions wrap around.
+
+    $ carlisle switch dir=right
 
 ## Examples
 
