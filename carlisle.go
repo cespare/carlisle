@@ -7,26 +7,21 @@ import (
 	"sort"
 )
 
-// check aborts on non-nil errors. (In this program, all errors are generally fatal for simplicity.)
-func check(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 type Command interface {
 	Execute(args []string) error
 	Help() string
 }
 
 var (
-	commands = map[string]Command{} // Filled in in init()s
+	commands     = map[string]Command{} // Filled in in init()s
 	commandNames []string
 )
 
 func usage(status int) {
 	fmt.Printf(`Usage:
+
     %s COMMAND [arg1] [arg2] ...
+
 where COMMAND is one of %v
 (Type '%[1]s COMMAND help' to see information about a specific command.)
 `, os.Args[0], commandNames)
@@ -57,5 +52,7 @@ func main() {
 			os.Exit(0)
 		}
 	}
-	check(command.Execute(os.Args[2:]))
+	if err := command.Execute(os.Args[2:]); err != nil {
+		log.Fatal(err)
+	}
 }

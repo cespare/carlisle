@@ -13,7 +13,9 @@ func init() { commands["toggle"] = Toggle{} }
 
 func (t Toggle) Help() string {
 	return `toggle usage:
+
     toggle [maximized|fullscreen]
+
 Toggles the maximized or fullscreen state of the active window.`
 }
 

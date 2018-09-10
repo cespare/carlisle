@@ -48,8 +48,9 @@ func applyStruts(X *xgbutil.XUtil, heads xinerama.Heads) error {
 	return nil
 }
 
-// findAssociatedHead determines which head is associated with a window by using a simple heuristic: pick the
-// first head containing the centerpoint of the window.
+// findAssociatedHead determines which head is associated with a window
+// by using a simple heuristic: pick the first head containing the centerpoint
+// of the window.
 func findAssociatedHead(window xrect.Rect, heads xinerama.Heads) (index int, err error) {
 	if len(heads) == 1 {
 		return 0, nil

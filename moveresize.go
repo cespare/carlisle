@@ -23,7 +23,9 @@ func init() { commands["moveresize"] = &MoveResize{} }
 
 func (m *MoveResize) Help() string {
 	return `moveresize usage:
+
     moveresize x=x1 y=y1 w=w1 h=h1
+
 The values can be math s-expressions.`
 }
 

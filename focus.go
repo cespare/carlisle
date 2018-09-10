@@ -15,7 +15,9 @@ func init() { commands["focus"] = &Focus{} }
 
 func (f *Focus) Help() string {
 	return `focus usage:
+
     focus match=string
+
 The string is matched case-insensitively against all window titles, starting
 from the top of the stack.`
 }

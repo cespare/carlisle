@@ -18,9 +18,12 @@ func init() { commands["switch"] = &Switch{} }
 
 func (s *Switch) Help() string {
 	return `switch usage:
+
     switch [head=n|dir=[left|right]]
-Switches the active window to be on a different head. An absolute, 0-indexed head may be provided, or else a
-direction (left or right, with wrapping).`
+
+Switches the active window to be on a different head.
+An absolute, 0-indexed head may be provided, or else a direction
+(left or right, with wrapping).`
 }
 
 const (

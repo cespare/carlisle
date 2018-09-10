@@ -8,7 +8,8 @@ import (
 	"strings"
 )
 
-// This file defines a simple AST for arithmetic. It's represented by the user using an s-expression.
+// This file defines a simple AST for arithmetic. It's represented by the user
+// using an s-expression.
 
 type Arith interface {
 	Eval(*MoveResizeState) (float64, error)
