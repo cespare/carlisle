@@ -25,23 +25,23 @@ func (t Toggle) Execute(args []string) error {
 	}
 
 	// Connect to X
-	X, err := xgbutil.NewConn()
+	x, err := xgbutil.NewConn()
 	if err != nil {
 		return err
 	}
 
 	// Find the active window
-	active, err := ewmh.ActiveWindowGet(X)
+	active, err := ewmh.ActiveWindowGet(x)
 	if err != nil {
 		return err
 	}
 
 	switch args[0] {
 	case "maximized":
-		return ewmh.WmStateReqExtra(X, active, ewmh.StateToggle,
+		return ewmh.WmStateReqExtra(x, active, ewmh.StateToggle,
 			"_NET_WM_STATE_MAXIMIZED_VERT", "_NET_WM_STATE_MAXIMIZED_HORZ", 2)
 	case "fullscreen":
-		return ewmh.WmStateReq(X, active, ewmh.StateToggle, "_NET_WM_STATE_FULLSCREEN")
+		return ewmh.WmStateReq(x, active, ewmh.StateToggle, "_NET_WM_STATE_FULLSCREEN")
 	}
 	return fmt.Errorf("toggle: unrecognized argument %q", args[0])
 }

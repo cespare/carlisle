@@ -46,28 +46,28 @@ func (f *Focus) Execute(args []string) error {
 		return err
 	}
 
-	X, err := xgbutil.NewConn()
+	x, err := xgbutil.NewConn()
 	if err != nil {
 		return err
 	}
 	// This returns an array from bottom -> top
-	clients, err := ewmh.ClientListStackingGet(X)
+	clients, err := ewmh.ClientListStackingGet(x)
 	if err != nil {
 		return err
 	}
 	// Go from the top to the bottom; find the first match
 	for i := len(clients) - 1; i >= 0; i-- {
 		client := clients[i]
-		name, err := ewmh.WmNameGet(X, client)
+		name, err := ewmh.WmNameGet(x, client)
 		if err != nil || name == "" {
-			name, err = icccm.WmNameGet(X, client)
+			name, err = icccm.WmNameGet(x, client)
 			if err != nil {
 				continue
 			}
 		}
 		if strings.Contains(strings.ToLower(name), match) {
 			fmt.Printf("focus: found match %q\n", name)
-			if err := ewmh.ActiveWindowReq(X, client); err != nil {
+			if err := ewmh.ActiveWindowReq(x, client); err != nil {
 				return err
 			}
 			return nil

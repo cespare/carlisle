@@ -33,7 +33,7 @@ func (m *MoveResize) parseArgs(args []string) error {
 	for _, arg := range args {
 		parts := strings.SplitN(arg, "=", 2)
 		if len(parts) != 2 {
-			return fmt.Errorf("Bad parameter: %s", arg)
+			return fmt.Errorf("bad parameter: %s", arg)
 		}
 		var arith Arith
 		var err error
@@ -49,22 +49,22 @@ func (m *MoveResize) parseArgs(args []string) error {
 		switch name {
 		case "x":
 			if m.X != nil {
-				return errors.New("Duplicate param x")
+				return errors.New("duplicate param x")
 			}
 			m.X = arith
 		case "y":
 			if m.Y != nil {
-				return errors.New("Duplicate param y")
+				return errors.New("duplicate param y")
 			}
 			m.Y = arith
 		case "w":
 			if m.W != nil {
-				return errors.New("Duplicate param w")
+				return errors.New("duplicate param w")
 			}
 			m.W = arith
 		case "h":
 			if m.H != nil {
-				return errors.New("Duplicate param h")
+				return errors.New("duplicate param h")
 			}
 			m.H = arith
 		}
@@ -81,22 +81,22 @@ func (m *MoveResize) Execute(args []string) error {
 	}
 
 	// Connect to X
-	X, err := xgbutil.NewConn()
+	xConn, err := xgbutil.NewConn()
 	if err != nil {
 		return err
 	}
 
-	heads, err := findHeads(X)
+	heads, err := findHeads(xConn)
 	if err != nil {
 		return err
 	}
 
 	// Find the active window
-	current, err := ewmh.ActiveWindowGet(X)
+	current, err := ewmh.ActiveWindowGet(xConn)
 	if err != nil {
 		return err
 	}
-	dgeom, err := xwindow.New(X, current).DecorGeometry()
+	dgeom, err := xwindow.New(xConn, current).DecorGeometry()
 	if err != nil {
 		return err
 	}
@@ -107,7 +107,7 @@ func (m *MoveResize) Execute(args []string) error {
 	}
 	activeHead := heads[i]
 
-	if err := applyStruts(X, heads); err != nil {
+	if err := applyStruts(xConn, heads); err != nil {
 		return err
 	}
 
@@ -116,14 +116,15 @@ func (m *MoveResize) Execute(args []string) error {
 		ScreenH: activeHead.Height(),
 	}
 
-	// We make it appear to the user as though (0,0) is at the top left of the usable space (so if you have a
-	// 25px bar at the top of your screen, what the user sees as the origin is actually x = 0, y = 25).
+	// We make it appear to the user as though (0,0) is at the top left of
+	// the usable space (so if you have a 25px bar at the top of your
+	// screen, what the user sees as the origin is actually x = 0, y = 25).
 	state.X = dgeom.X() - activeHead.X()
 	state.Y = dgeom.Y() - activeHead.Y()
 	state.W = dgeom.Width()
 	state.H = dgeom.Height()
 
-	extents, err := ewmh.FrameExtentsGet(X, current)
+	extents, err := ewmh.FrameExtentsGet(xConn, current)
 	if err != nil {
 		return err
 	}
@@ -163,7 +164,7 @@ func (m *MoveResize) Execute(args []string) error {
 	}
 	h -= (extents.Top + extents.Bottom)
 
-	if err := ewmh.MoveresizeWindow(X, current, x, y, w, h); err != nil {
+	if err := ewmh.MoveresizeWindow(xConn, current, x, y, w, h); err != nil {
 		return err
 	}
 	return nil

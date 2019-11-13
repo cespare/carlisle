@@ -67,12 +67,12 @@ func (s *Switch) Execute(args []string) error {
 	}
 
 	// Connect to X
-	X, err := xgbutil.NewConn()
+	x, err := xgbutil.NewConn()
 	if err != nil {
 		return err
 	}
 
-	heads, err := findHeads(X)
+	heads, err := findHeads(x)
 	if err != nil {
 		return err
 	}
@@ -81,11 +81,11 @@ func (s *Switch) Execute(args []string) error {
 	}
 
 	// Find the active window
-	active, err := ewmh.ActiveWindowGet(X)
+	active, err := ewmh.ActiveWindowGet(x)
 	if err != nil {
 		return err
 	}
-	dgeom, err := xwindow.New(X, active).DecorGeometry()
+	dgeom, err := xwindow.New(x, active).DecorGeometry()
 	if err != nil {
 		return err
 	}
@@ -113,10 +113,7 @@ func (s *Switch) Execute(args []string) error {
 	}
 
 	newHead := heads[headIndex]
-	x := newHead.X() + (newHead.Width() / 2) - (dgeom.Width() / 2)
-	y := newHead.Y() + (newHead.Height() / 2) - (dgeom.Height() / 2)
-	if err := ewmh.MoveresizeWindow(X, active, x, y, dgeom.Width(), dgeom.Height()); err != nil {
-		return err
-	}
-	return nil
+	newX := newHead.X() + (newHead.Width() / 2) - (dgeom.Width() / 2)
+	newY := newHead.Y() + (newHead.Height() / 2) - (dgeom.Height() / 2)
+	return ewmh.MoveresizeWindow(x, active, newX, newY, dgeom.Width(), dgeom.Height())
 }

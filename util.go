@@ -11,23 +11,23 @@ import (
 )
 
 // findHeads returns all the display heads.
-func findHeads(X *xgbutil.XUtil) (xinerama.Heads, error) {
-	root := xwindow.New(X, X.RootWin())
+func findHeads(x *xgbutil.XUtil) (xinerama.Heads, error) {
+	root := xwindow.New(x, x.RootWin())
 	rgeom, err := root.Geometry()
 	if err != nil {
 		return nil, err
 	}
 
 	// Locate all the displays
-	if X.ExtInitialized("XINERAMA") {
-		return xinerama.PhysicalHeads(X)
+	if x.ExtInitialized("XINERAMA") {
+		return xinerama.PhysicalHeads(x)
 	}
 	return xinerama.Heads{rgeom}, nil
 }
 
 // applyStruts finds and applies all struts to the given heads.
-func applyStruts(X *xgbutil.XUtil, heads xinerama.Heads) error {
-	clients, err := ewmh.ClientListGet(X)
+func applyStruts(x *xgbutil.XUtil, heads xinerama.Heads) error {
+	clients, err := ewmh.ClientListGet(x)
 	if err != nil {
 		return err
 	}
@@ -35,11 +35,13 @@ func applyStruts(X *xgbutil.XUtil, heads xinerama.Heads) error {
 	rgeom := heads[0] // TODO: This definitely is wrong. Test on a xinerama machine
 
 	for _, client := range clients {
-		strut, err := ewmh.WmStrutPartialGet(X, client)
+		strut, err := ewmh.WmStrutPartialGet(x, client)
 		if err != nil {
 			continue
 		}
-		xrect.ApplyStrut(heads, uint(rgeom.Width()), uint(rgeom.Height()),
+		xrect.ApplyStrut(
+			heads,
+			uint(rgeom.Width()), uint(rgeom.Height()),
 			strut.Left, strut.Right, strut.Top, strut.Bottom,
 			strut.LeftStartY, strut.LeftEndY, strut.RightStartY, strut.RightEndY,
 			strut.TopStartX, strut.TopEndX, strut.BottomStartX, strut.BottomEndX,

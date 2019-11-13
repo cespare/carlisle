@@ -19,10 +19,10 @@ type Arith interface {
 func ParseArith(b []byte) (Arith, error) {
 	arith, rest, err := parseArith(b)
 	if err != nil {
-		return nil, fmt.Errorf("Error parsing '%s': %s\n", string(b), err)
+		return nil, fmt.Errorf("error parsing %q: %s", b, err)
 	}
 	if len(bytes.TrimSpace(rest)) != 0 {
-		return nil, fmt.Errorf("Trailing junk after arithmetic expression: %q", rest)
+		return nil, fmt.Errorf("trailing junk after arithmetic expression: %q", rest)
 	}
 	return arith, nil
 }
@@ -30,7 +30,7 @@ func ParseArith(b []byte) (Arith, error) {
 func parseArith(b []byte) (arith Arith, rest []byte, err error) {
 	b = bytes.TrimSpace(b)
 	if len(b) == 0 {
-		return nil, nil, unexpectedEnd
+		return nil, nil, errUnexpectedEnd
 	}
 	switch {
 	case b[0] == '(':
@@ -48,7 +48,7 @@ func scanTok(b []byte) (first, rest []byte, err error) {
 		case '\r', '\n', ' ', '\t', '(', ')':
 			tok = bytes.TrimSpace(tok)
 			if len(tok) == 0 {
-				return nil, nil, unexpectedEnd
+				return nil, nil, errUnexpectedEnd
 			}
 			return tok, bytes.TrimSpace(b[i:]), nil
 		}
@@ -84,7 +84,7 @@ type ArithFn struct {
 	Args []Arith
 }
 
-var unexpectedEnd = errors.New("reached end of expression unexpectedly")
+var errUnexpectedEnd = errors.New("reached end of expression unexpectedly")
 
 func parseArithFn(b []byte) (*ArithFn, []byte, error) {
 	b = b[1:]
@@ -94,14 +94,14 @@ func parseArithFn(b []byte) (*ArithFn, []byte, error) {
 	}
 	typ, ok := SymbolToFn[string(first)]
 	if !ok {
-		return nil, nil, fmt.Errorf("Unrecognized function: %s", string(first))
+		return nil, nil, fmt.Errorf("unrecognized function: %s", string(first))
 	}
 	b = rest
 	args := []Arith{}
 	var arith Arith
 	for {
 		if len(b) == 0 {
-			return nil, nil, unexpectedEnd
+			return nil, nil, errUnexpectedEnd
 		}
 		if b[0] == ')' {
 			rest = b[1:]
@@ -210,7 +210,7 @@ func parseArithAtom(b []byte) (ArithAtom, []byte, error) {
 	}
 	atom, ok := SymbolToAtom[string(first)]
 	if !ok {
-		return 0, nil, fmt.Errorf("Bad atom: %s", string(first))
+		return 0, nil, fmt.Errorf("bad atom: %s", string(first))
 	}
 	return atom, rest, nil
 }
