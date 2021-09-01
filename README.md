@@ -6,7 +6,7 @@ Status: Alpha. Useful for me. Liable to change.
 
 ## Installation
 
-    $ go get github.com/cespare/carlisle
+    $ go install github.com/cespare/carlisle@latest
 
 ## Usage
 
