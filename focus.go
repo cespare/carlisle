@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/BurntSushi/xgbutil"
@@ -22,26 +23,26 @@ The string is matched case-insensitively against all window titles, starting
 from the top of the stack.`
 }
 
-func (f *Focus) parseArgs(args []string) (string, error) {
+func (f *Focus) parseArgs(args []string) (*regexp.Regexp, error) {
 	if len(args) != 1 {
-		return "", fmt.Errorf("focus: only one argument expected but %d given", len(args))
+		return nil, fmt.Errorf("focus: only one argument expected but %d given", len(args))
 	}
 	parts := strings.SplitN(args[0], "=", 2)
 	if len(parts) != 2 {
-		return "", fmt.Errorf("focus: bad parameter %q", args[0])
+		return nil, fmt.Errorf("focus: bad parameter %q", args[0])
 	}
 	if parts[0] != "match" {
-		return "", fmt.Errorf("focus: unrecognized parameter %q", parts[0])
+		return nil, fmt.Errorf("focus: unrecognized parameter %q", parts[0])
 	}
-	match := strings.TrimSpace(parts[1])
-	if match == "" {
-		return "", fmt.Errorf("focus: empty match")
+	re, err := regexp.Compile(parts[1])
+	if err != nil {
+		return nil, fmt.Errorf("invalid match regexp: %s", err)
 	}
-	return match, nil
+	return re, nil
 }
 
 func (f *Focus) Execute(args []string) error {
-	match, err := f.parseArgs(args)
+	re, err := f.parseArgs(args)
 	if err != nil {
 		return err
 	}
@@ -65,7 +66,7 @@ func (f *Focus) Execute(args []string) error {
 				continue
 			}
 		}
-		if strings.Contains(strings.ToLower(name), match) {
+		if re.MatchString(name) {
 			fmt.Printf("focus: found match %q\n", name)
 			if err := ewmh.ActiveWindowReq(x, client); err != nil {
 				return err
@@ -73,5 +74,5 @@ func (f *Focus) Execute(args []string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("focus: no window matched %q", match)
+	return fmt.Errorf("focus: no window matched %q", re)
 }

@@ -46,14 +46,14 @@ the right half of your screen:
 
 Activate (raise and focus) a window by matching its title.
 
-    $ carlisle focus match=substr
+    $ carlisle focus match=regexp
 
 This just looks through the window stack from top to bottom and finds the first
-window whose title contains the substring. The match is case-insensitive.
+window whose title matches the regular expression.
 
 **Example:** This is how you might quickly focus a gvim window:
 
-    $ carlisle focus match=gvim
+    $ carlisle focus 'match=(?i:gvim)'
 
 ### toggle
 
